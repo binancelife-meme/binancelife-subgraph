@@ -1,0 +1,11 @@
+{
+  "network": "chapel",
+  "chainId": 97,
+  "symbol": "BNB",
+  "address_LuckyPower": "0xb02a38E2B0870681a3145EFa4c7d4e478256966c",
+  "startBlock_LuckyPower": 77726264,
+  "address_LuckypotContract": "0x3DdD6814a974a0c608036d2cd982DD089Ca28a14",
+  "startBlock_LuckypotContract": 77726271,
+  "address_LuckyPowerMiner": "0xc97E480Dd55C8334665ED2337a819944e66763b1",
+  "startBlock_LuckyPowerMiner": 77726290
+}

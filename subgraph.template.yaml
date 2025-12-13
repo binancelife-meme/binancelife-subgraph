@@ -1,0 +1,143 @@
+specVersion: 1.2.0
+description: BinanceLife protocol on {{network}}
+features:
+  - fullTextSearch
+  - grafting
+  - ipfsOnEthereumContracts
+  - nonDeterministicIpfs
+schema:
+  file: ./schema.graphql
+# indexerHints:
+#   prune: never
+templates:
+  - name: TokenMetadata
+    kind: file/ipfs
+    mapping:
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      file: ./src/mappings/TokenMetadata.ts
+      handler: handleMetadata
+      entities:
+        - TokenMetadata
+      abis:
+        - name: TokenContract
+          file: ./abis/TokenMetadata.json
+dataSources:
+  - name: LuckypotContract
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      address: "{{address_LuckypotContract}}"
+      abi: LuckypotContract
+      startBlock: {{startBlock_LuckypotContract}}
+    context:
+      chainId:
+        type: Int
+        data: {{chainId}}
+      symbol:
+        type: String
+        data: {{symbol}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - Luckypot
+        - LuckypotTicket
+        - LuckypotParticipant
+        - LuckypotCancelEvent
+        - LuckypotCloseEvent
+        - LuckypotEndEvent
+        - LuckypotSponsorRecord
+        - ClaimPrizeRecord
+        - User
+        - UserStat
+        - UserStakeStat
+        - UserLockStat
+        - StakeRecord
+        - LockRecord
+      abis:
+        - name: LuckypotContract
+          file: ./abis/LuckypotContract.json
+        - name: TokenContract
+          file: ./abis/TokenMetadata.json
+      eventHandlers:
+        - event: LuckypotCreated(indexed uint256,indexed address,uint256,uint256,string)
+          handler: handleLuckypotCreated
+        - event: LuckypotClosed(indexed uint256,indexed address,uint256)
+          handler: handleLuckypotColsed
+        - event: LuckypotCancelled(indexed uint256,indexed address,uint256)
+          handler: handleLuckypotCancelled
+        - event: LuckypotEnded(indexed uint256,indexed address,uint32[],uint256[4])
+          handler: handleLuckypotEnded
+        - event: TicketCreated(indexed uint256,indexed address,uint256,uint256,uint256,uint256,string)
+          handler: handleTicketCreated
+        - event: SponsorAdded(indexed uint256,indexed address,address,uint256,string)
+          handler: handleSponsorAdded
+        - event: SponsorRefunded(indexed uint256,indexed address,address,uint256)
+          handler: handleSponsorRefunded
+        - event: TransferPrize(indexed uint256,indexed address,address,uint256,uint8)
+          handler: handleTransferPrize
+      file: ./src/mappings/LuckypotContract.ts
+  - name: LuckyPowerMiner
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      address: "{{address_LuckyPowerMiner}}"
+      abi: LuckyPowerMiner
+      startBlock: {{startBlock_LuckyPowerMiner}}
+    context:
+      chainId:
+        type: Int
+        data: {{chainId}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      file: ./src/mappings/LuckyPowerMiner.ts
+      entities:
+        - UserStake
+        - LockRecord
+        - StakeRecord
+        - UserLockStat
+      abis:
+        - name: LuckyPowerMiner
+          file: ./abis/LuckyPowerMiner.json
+      eventHandlers:
+        - event: Locked(indexed address,indexed address,uint256,uint256,uint256,uint256)
+          handler: handleLocked
+        - event: Unlocked(indexed address,indexed address,uint256)
+          handler: handleUnlocked
+        - event: Staked(indexed address,indexed address,uint256)
+          handler: handleStaked
+        - event: Unstaked(indexed address,indexed address,uint256)
+          handler: handleUnstaked
+        - event: Claimed(indexed address,indexed address,uint256)
+          handler: handleClaimed
+  - name: LuckyPower
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      address: "{{address_LuckyPower}}"
+      abi: LuckyPower
+      startBlock: {{startBlock_LuckyPower}}
+    context:
+      chainId:
+        type: Int
+        data: {{chainId}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      file: ./src/mappings/LuckyPower.ts
+      entities:
+        - User
+        - UserPower
+      abis:
+        - name: LuckyPower
+          file: ./abis/LuckyPower.json
+      eventHandlers:
+        - event: PowersCredited(indexed address,indexed address,uint256)
+          handler: handlePowersCredited
+        - event: PowersDebited(indexed address,indexed address,uint256)
+          handler: handlePowersDebited

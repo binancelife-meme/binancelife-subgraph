@@ -1,0 +1,222 @@
+type Token @entity(immutable: false) {
+  id: ID!
+  address: String @index
+  name: String
+  symbol: String @index
+  decimals: Int
+}
+
+type TokenMetadata @entity(immutable: true) {
+  id: ID!
+  name: String
+  image: String
+  description: String
+}
+
+# ========== Luckypot ==========
+type Luckypot @entity(immutable: false) {
+  id: ID!
+
+  luckypotId: BigInt! @index
+  status: Int! @index
+
+  prizeToken: Bytes!
+  prizeAmount: BigInt!
+  powerToken: Bytes!
+  powerUnit: BigInt!
+  sponsorAmount: BigInt!
+
+  startTime: BigInt!
+  endTime: BigInt! @index
+  maxPerUser: BigInt!
+
+  useSqrtTickets: Boolean!
+
+  totalTickets: BigInt!
+  participants: Int!
+
+  funder: User!
+
+  title: String
+  note: String
+  image: String
+
+  prizeTokenInfo: Token
+  powerTokenInfo: Token
+
+  drawNumbers: [Int!]
+  prizeAmounts: [BigInt!]
+  prizeClaims: [Boolean!]
+  winners: [Bytes!]
+
+  cancelEvent: LuckypotCancelEvent @derivedFrom(field: "luckypot")
+  closeEvent: LuckypotCloseEvent @derivedFrom(field: "luckypot")
+  endEvent: LuckypotEndEvent @derivedFrom(field: "luckypot")
+
+  createdAt: BigInt! @index
+  txHash: Bytes!
+}
+
+type LuckypotTicket @entity(immutable: true) {
+  id: ID!
+  luckypot: Luckypot!
+  user: User!
+  ticketId: BigInt!
+  totalTickets: BigInt!
+  currentSize: BigInt!
+  usePowers: BigInt!
+  note: String
+  createdAt: BigInt!
+  txHash: Bytes!
+}
+
+type LuckypotParticipant @entity(immutable: false) {
+  id: ID!
+  luckypot: Luckypot! @index
+  user: User! @index
+  totalTickets: BigInt!
+  stakeAmount: BigInt!
+}
+
+type LuckypotCloseEvent @entity(immutable: true) {
+  id: ID!
+  luckypot: Luckypot! @index
+  caller: User! @index
+  totalTickets: BigInt!
+  createdAt: BigInt! @index
+  txHash: Bytes!
+}
+
+type LuckypotCancelEvent @entity(immutable: true) {
+  id: ID!
+  luckypot: Luckypot! @index
+  caller: User! @index
+  totalTickets: BigInt!
+  createdAt: BigInt! @index
+  txHash: Bytes!
+}
+
+type LuckypotEndEvent @entity(immutable: true) {
+  id: ID!
+  luckypot: Luckypot! @index
+  caller: User! @index
+  drawNumbers: [Int!]!
+  amounts: [BigInt!]!
+  createdAt: BigInt! @index
+  txHash: Bytes!
+}
+
+type LuckypotSponsor @entity(immutable: false) {
+  id: ID!
+  luckypot: Luckypot! @index
+  user: User! @index
+  sponsorAmount: BigInt!
+}
+
+type LuckypotSponsorRecord @entity(immutable: true) {
+  id: ID!
+  luckypot: Luckypot! @index
+  user: User! @index
+  prizeToken: Bytes!
+  sponsorAmount: BigInt!
+  note: String
+  createdAt: BigInt! @index
+  txHash: Bytes!
+}
+
+type ClaimPrizeRecord @entity(immutable: true) {
+  id: ID!
+  luckypot: Luckypot! @index
+  user: User! @index
+  prizeToken: Bytes!
+  prizeAmount: BigInt!
+  winPlace: Int!
+  createdAt: BigInt! @index
+  txHash: Bytes!
+}
+
+# ========== User ==========
+type User @entity(immutable: true) {
+  id: ID!
+}
+
+type UserStat @entity(immutable: false) {
+  id: ID!
+  user: User! @index
+  createCount: Int!
+  sponsorCount: Int!
+  joinCount: Int!
+  winCount: Int!
+  totalTickets: BigInt!
+}
+
+type UserTokenStat @entity(immutable: false) {
+  id: ID!
+  user: User! @index
+  token: Token
+  createAmount: BigInt!
+  sponsorAmount: BigInt!
+  joinAmount: BigInt!
+  winAmount: BigInt!
+}
+
+# ========== LuckyPowerMiner(Lock & Staking) ==========
+enum StakeType {
+  STAKE
+  UNSTAKE
+}
+
+type StakeRecord @entity(immutable: true) {
+  id: ID!
+  user: User! @index
+  token: Token! @index
+  type: StakeType! @index
+  amount: BigInt! @index
+  txHash: Bytes!
+  timestamp: BigInt! @index
+}
+
+type UserStake @entity(immutable: false) {
+  id: ID!
+  user: User! @index
+  token: Token! @index
+  staked: BigInt! @index
+  unstaked: BigInt! @index
+  staking: BigInt! @index
+  claimedPowers: BigInt! @index
+}
+
+type LockRecord @entity(immutable: false) {
+  id: ID!
+  user: User! @index
+  token: Token! @index
+  amount: BigInt! @index
+  unlockTime: BigInt! @index
+  powers: BigInt! @index
+  lockIndex: BigInt! @index
+  txHash: Bytes!
+  timestamp: BigInt! @index
+
+  active: Boolean! @index # false: unlocked, true: locked
+  unlockTxHash: Bytes
+  unlockTimestamp: BigInt @index
+}
+
+type UserLockStat @entity(immutable: false) {
+  id: ID!
+  user: User! @index
+  token: Token! @index
+  locked: BigInt! @index
+  unlocked: BigInt! @index
+  locking: BigInt! @index
+  powers: BigInt! @index
+}
+
+type UserPower @entity(immutable: false) {
+  id: ID!
+  user: User! @index
+  token: Token! @index
+  balance: BigInt! @index
+  totalCredit: BigInt! @index
+  totalDebit: BigInt! @index
+}

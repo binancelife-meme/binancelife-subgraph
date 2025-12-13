@@ -1,0 +1,36 @@
+{
+  "name": "@binancelife/subgraph",
+  "version": "0.1.1",
+  "license": "MIT",
+  "main": "index.js",
+  "author": "0xSeasonsRich",
+  "private": true,
+  "scripts": {
+    "init": "graph init",
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "prepare:bsc": "mustache config/bsc.json subgraph.template.yaml > subgraph.yaml && yarn codegen",
+    "deploy:bsc": "dotenv -- cross-var graph auth --product hosted-service %THEGRAPH_TOKEN% && graph deploy --product hosted-service binancelife/bsc",
+    "prepare:bscTestnet": "mustache config/bscTestnet.json subgraph.template.yaml > subgraph.yaml && yarn codegen",
+    "deploy:bscTestnet": "dotenv -- cross-var graph deploy binancelife-bscTestnet --version-label v%npm_package_version% --node %GRAPH_NODE% --deploy-key %GRAPH_NODE_KEY% --ipfs %GRAPH_IPFS%",
+    "start:dev": "yarn prepare:dev && yarn create:dev && yarn deploy:dev",
+    "prepare:dev": "mustache config/localhost.json subgraph.template.yaml > subgraph.yaml && yarn codegen",
+    "create:dev": "dotenv -- cross-var graph create binancelife-dev --node %GRAPH_NODE%",
+    "deploy:dev": "dotenv -- cross-var graph deploy binancelife-dev --ipfs %GRAPH_IPFS% --node %GRAPH_NODE% --version-label v%npm_package_version%",
+    "delete:dev": "dotenv -- cross-var graph remove binancelife-dev --node %GRAPH_NODE%"
+  },
+  "dependencies": {
+    "@subql/cli": "^6.6.0"
+  },
+  "devDependencies": {
+    "@goldskycom/cli": "^13.0.2",
+    "@graphprotocol/graph-cli": "^0.98.1",
+    "@graphprotocol/graph-ts": "^0.38.2",
+    "@sentio/cli": "^3.0.1",
+    "cross-var": "^1.1.0",
+    "dotenv": "^16.4.5",
+    "dotenv-cli": "^7.4.2",
+    "fs": "^0.0.1-security",
+    "mustache": "^4.2.0"
+  }
+}
