@@ -2,10 +2,10 @@
   "network": "bsc",
   "chainId": 56,
   "symbol": "BNB",
-  "address_LuckyPower": "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
-  "startBlock_LuckyPower": 8,
-  "address_LuckypotContract": "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
-  "startBlock_LuckypotContract": 9,
-  "address_LuckyPowerMiner": "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
-  "startBlock_LuckyPowerMiner": 10
+  "address_LuckyPower": "0x91A9d9eE9270d19E5c855f08f4A07561d24f4b68",
+  "startBlock_LuckyPower": 72498578,
+  "address_LuckypotContract": "0x4bFe87D4D1b1183a779F5912047D74e923d57f32",
+  "startBlock_LuckypotContract": 72498580,
+  "address_LuckyPowerMiner": "0x1cc9ca37c291eCb1FDE8f5d4c22EbD4C3B2503b7",
+  "startBlock_LuckyPowerMiner": 72498589
 }
